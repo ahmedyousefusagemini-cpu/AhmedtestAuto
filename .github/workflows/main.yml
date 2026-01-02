@@ -1,0 +1,45 @@
+name: Run n8n Workflow (Docker)
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install jq
+        run: sudo apt update && sudo apt install -y jq
+      - name: Create creds file
+        run: echo '${{ secrets.CREDS }}' > creds.json
+      - name: Start container
+        run: |
+          docker run -d --name n8n -p 5678:5678 -v ${{ github.workspace }}:/workspace \
+            -e N8N_BASIC_AUTH_ACTIVE=true -e N8N_BASIC_AUTH_USER=admin \
+            -e N8N_BASIC_AUTH_PASSWORD=${{ secrets.N8N_PASSWORD }} \
+            -e N8N_DISABLE_PRODUCTION_MAIN_PROCESS=true \
+            -e N8N_HOST=0.0.0.0 -e N8N_PORT=5678 -e WEBHOOK_URL=http://localhost:5678/ \
+            -e GENERIC_TIMEZONE=UTC -e TZ=UTC -e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true \
+            docker.n8n.io/n8nio/n8n:latest
+      - name: Wait
+        run: sleep 20
+      - name: Import creds
+        run: |
+          docker cp creds.json n8n:/workspace/creds.json
+          docker exec n8n n8n import:credentials --input=/workspace/creds.json
+          rm creds.json
+      - name: Import/activate workflow
+        run: |
+          docker cp workflow.json n8n:/workspace/workflow.json
+          docker exec n8n n8n import:workflow --input=/workspace/workflow.json
+          docker exec n8n n8n update:workflow --all --active=true
+      - name: Execute
+        run: |
+          WORKFLOW_ID=$(docker exec n8n n8n export:workflow --all | jq -r '.[0].id // empty')
+          if [ -z "$WORKFLOW_ID" ]; then echo "No workflow"; exit 1; fi
+          echo "Running $WORKFLOW_ID"
+          docker exec n8n n8n execute --id $WORKFLOW_ID
+      - name: Cleanup
+        if: always()
+        run: docker stop n8n || true; docker rm n8n || true
