@@ -1,1 +1,411 @@
-[{"updatedAt":"2025-11-21T14:26:49.000Z","createdAt":"2025-10-29T22:21:14.970Z","id":"uLAVYVeM51l1Fd3o","name":"Demo: My first AI Agent in n8n","description":null,"active":false,"isArchived":true,"nodes":[],"connections":{},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateId":"self-building-ai-agent","templateCredsSetupCompleted":true},"pinData":{},"versionId":"d3ecf490-3203-41d5-844b-55253d082cef","versionCounter":3,"triggerCount":0,"tags":[],"shared":[{"updatedAt":"2025-10-29T22:21:14.982Z","createdAt":"2025-10-29T22:21:14.982Z","role":"workflow:owner","workflowId":"uLAVYVeM51l1Fd3o","projectId":"R907igot7oGC1lvQ","project":{"updatedAt":"2025-10-29T22:18:45.828Z","createdAt":"2025-10-29T22:17:49.826Z","id":"R907igot7oGC1lvQ","name":"Ahmed Yousef <acc.ahmed.m.yousef@gmail.com>","type":"personal","icon":null,"description":null}}]},{"updatedAt":"2025-11-18T17:46:02.000Z","createdAt":"2025-11-01T06:01:07.541Z","id":"mb0qBys9f9a9Vt2W","name":"My workflow","description":null,"active":true,"isArchived":false,"nodes":[{"parameters":{"updates":["message"],"additionalFields":{}},"type":"n8n-nodes-base.telegramTrigger","typeVersion":1.2,"position":[-224,0],"id":"51243730-88a2-4fbc-bf76-b8015b339885","name":"Telegram Trigger","webhookId":"076d67cd-2361-44a8-9574-6de079a3864c","credentials":{"telegramApi":{"id":"irGiiA3LMwLgDcRY","name":"Telegram account"}}},{"parameters":{"promptType":"define","text":"={{ $json.message.text }}","options":{"systemMessage":"=You are a helpful assistant you are chatting with {{ $json.message.chat.first_name }} and today is {{ DateTime.fromISO($now).toLocaleString(DateTime.DATETIME_FULL) }}\n\nin replay You are a Telegram bot. Always respond in MarkdownV2. Escape these characters: _ * [ ] ( ) ~ ` > # + - = | { } . !\n\nin replay You are a Telegram bot respond with telegram supported html"}},"type":"@n8n/n8n-nodes-langchain.agent","typeVersion":3,"position":[272,0],"id":"28a1bff7-c727-48ac-90dd-e832abdd8917","name":"AI Agent"},{"parameters":{"model":"meta-llama/llama-3.3-70b-instruct:free","options":{}},"type":"@n8n/n8n-nodes-langchain.lmChatOpenRouter","typeVersion":1,"position":[144,208],"id":"a768700a-7a6a-4be3-9fa5-c7ece282de49","name":"OpenRouter Chat Model","credentials":{"openRouterApi":{"id":"eTNYCGFMRo3QD8Hj","name":"OpenRouter account"}}},{"parameters":{"chatId":"={{ $('Telegram Trigger').item.json.message.chat.id }}","text":"={{ $json.output }}","additionalFields":{"parse_mode":"HTML"}},"type":"n8n-nodes-base.telegram","typeVersion":1.2,"position":[624,0],"id":"b282de60-bef3-4484-a374-c75a99ad3aff","name":"Send a text message","webhookId":"f76d6e93-badb-48a6-a408-74e2deef2dca","credentials":{"telegramApi":{"id":"irGiiA3LMwLgDcRY","name":"Telegram account"}}},{"parameters":{"sessionIdType":"customKey","sessionKey":"={{ $json.message.chat.id }}","contextWindowLength":99},"type":"@n8n/n8n-nodes-langchain.memoryBufferWindow","typeVersion":1.3,"position":[288,208],"id":"10dcd4ba-f57a-47f2-8c07-21bcd46dc2d5","name":"Simple Memory"}],"connections":{"Telegram Trigger":{"main":[[{"node":"AI Agent","type":"main","index":0}]]},"OpenRouter Chat Model":{"ai_languageModel":[[{"node":"AI Agent","type":"ai_languageModel","index":0}]]},"AI Agent":{"main":[[{"node":"Send a text message","type":"main","index":0}]]},"Simple Memory":{"ai_memory":[[{"node":"AI Agent","type":"ai_memory","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"2e54536d-96ae-4be8-bf14-3bbe6cf17dbc","versionCounter":10,"triggerCount":1,"tags":[],"shared":[{"updatedAt":"2025-11-01T06:01:07.546Z","createdAt":"2025-11-01T06:01:07.546Z","role":"workflow:owner","workflowId":"mb0qBys9f9a9Vt2W","projectId":"R907igot7oGC1lvQ","project":{"updatedAt":"2025-10-29T22:18:45.828Z","createdAt":"2025-10-29T22:17:49.826Z","id":"R907igot7oGC1lvQ","name":"Ahmed Yousef <acc.ahmed.m.yousef@gmail.com>","type":"personal","icon":null,"description":null}}]},{"updatedAt":"2025-11-21T20:58:35.000Z","createdAt":"2025-11-21T15:50:07.108Z","id":"Lctdt8bR8cAjUnby","name":"My workflow 2","description":null,"active":true,"isArchived":false,"nodes":[{"parameters":{"httpMethod":"POST","path":"7cebd305-3a32-4bdd-bda4-b2e722d683e4","options":{}},"type":"n8n-nodes-base.webhook","typeVersion":2.1,"position":[0,0],"id":"afb427da-07b5-4626-9290-9c001549a6cc","name":"Webhook","webhookId":"7cebd305-3a32-4bdd-bda4-b2e722d683e4"},{"parameters":{"promptType":"define","text":"={{ $json.body.data.message.conversation }}","options":{}},"type":"@n8n/n8n-nodes-langchain.agent","typeVersion":3,"position":[208,0],"id":"0f378448-6cf1-459a-9c5c-72798f964e38","name":"AI Agent"},{"parameters":{"model":"meta-llama/llama-3.3-70b-instruct:free","options":{}},"type":"@n8n/n8n-nodes-langchain.lmChatOpenRouter","typeVersion":1,"position":[80,208],"id":"0b6430ca-f2f5-4e42-a4b1-54f2839e3e21","name":"OpenRouter Chat Model","credentials":{"openRouterApi":{"id":"eTNYCGFMRo3QD8Hj","name":"OpenRouter account"}}},{"parameters":{"sessionIdType":"customKey","sessionKey":"={{ $json.body.data.message.conversation }}","contextWindowLength":99},"type":"@n8n/n8n-nodes-langchain.memoryBufferWindow","typeVersion":1.3,"position":[224,208],"id":"2aed557e-88ee-47df-a6bc-7b14188a5919","name":"Simple Memory"},{"parameters":{"resource":"messages-api","instanceName":"={{ $('Webhook').item.json.body.instance }}","remoteJid":"={{ $('Webhook').item.json.body.data.key.remoteJidAlt }}","messageText":"={{ $json.output }}","options_message":{}},"type":"n8n-nodes-evolution-api-en.evolutionApi","typeVersion":1,"position":[560,0],"id":"448e4266-44bd-46cb-a85c-d4321ea181fb","name":"Send text","credentials":{"evolutionApi":{"id":"mETfkOT2zuLfmuYG","name":"Evolution account"}}}],"connections":{"Webhook":{"main":[[{"node":"AI Agent","type":"main","index":0}]]},"OpenRouter Chat Model":{"ai_languageModel":[[{"node":"AI Agent","type":"ai_languageModel","index":0}]]},"Simple Memory":{"ai_memory":[[{"node":"AI Agent","type":"ai_memory","index":0}]]},"AI Agent":{"main":[[{"node":"Send text","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"4a4e81bc-dff7-4311-aa79-731b93e00076","versionCounter":7,"triggerCount":1,"tags":[],"shared":[{"updatedAt":"2025-11-21T15:50:07.118Z","createdAt":"2025-11-21T15:50:07.118Z","role":"workflow:owner","workflowId":"Lctdt8bR8cAjUnby","projectId":"R907igot7oGC1lvQ","project":{"updatedAt":"2025-10-29T22:18:45.828Z","createdAt":"2025-10-29T22:17:49.826Z","id":"R907igot7oGC1lvQ","name":"Ahmed Yousef <acc.ahmed.m.yousef@gmail.com>","type":"personal","icon":null,"description":null}}]},{"updatedAt":"2025-11-23T19:53:22.000Z","createdAt":"2025-11-23T19:11:10.592Z","id":"AFss293DjwtiXAUA","name":"My workflow 3","description":null,"active":true,"isArchived":false,"nodes":[{"parameters":{"promptType":"define","text":"={{ $json.chatInput }}","options":{}},"type":"@n8n/n8n-nodes-langchain.agent","typeVersion":3,"position":[416,16],"id":"c2617cbb-ed9d-41ec-b3fe-efbb0ceef3a7","name":"AI Agent"},{"parameters":{"public":true,"options":{"responseMode":"lastNode"}},"type":"@n8n/n8n-nodes-langchain.chatTrigger","typeVersion":1.4,"position":[-208,32],"id":"c9bba44d-b8c8-4e9d-903b-bf24e2f49d00","name":"When chat message received","webhookId":"2019dbb0-693a-41bc-8c57-9154567b4ea3"},{"parameters":{"model":"meta-llama/llama-3.3-70b-instruct:free","options":{}},"type":"@n8n/n8n-nodes-langchain.lmChatOpenRouter","typeVersion":1,"position":[288,224],"id":"34d9a5ad-c94b-4201-9a55-e8a3c1ce20db","name":"OpenRouter Chat Model","notesInFlow":false,"credentials":{"openRouterApi":{"id":"eTNYCGFMRo3QD8Hj","name":"OpenRouter account"}},"notes":"you are a very help full ai assistant"},{"parameters":{},"type":"@n8n/n8n-nodes-langchain.memoryBufferWindow","typeVersion":1.3,"position":[432,224],"id":"753a02db-619b-42f0-8699-71a8878bea3d","name":"Simple Memory"},{"parameters":{"respondWith":"allIncomingItems","options":{"responseCode":200}},"type":"n8n-nodes-base.respondToWebhook","typeVersion":1.4,"position":[768,16],"id":"f7c65982-573d-43e5-8709-c28ee95e6f8e","name":"Respond to Webhook"}],"connections":{"When chat message received":{"main":[[{"node":"AI Agent","type":"main","index":0}]]},"OpenRouter Chat Model":{"ai_languageModel":[[{"node":"AI Agent","type":"ai_languageModel","index":0}]]},"Simple Memory":{"ai_memory":[[{"node":"AI Agent","type":"ai_memory","index":0}]]},"AI Agent":{"main":[[{"node":"Respond to Webhook","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"staticData":null,"meta":{"templateCredsSetupCompleted":true},"pinData":{},"versionId":"2e2da7b6-f961-4047-bef3-75b23fbe75da","versionCounter":17,"triggerCount":1,"tags":[],"shared":[{"updatedAt":"2025-11-23T19:11:10.603Z","createdAt":"2025-11-23T19:11:10.603Z","role":"workflow:owner","workflowId":"AFss293DjwtiXAUA","projectId":"R907igot7oGC1lvQ","project":{"updatedAt":"2025-10-29T22:18:45.828Z","createdAt":"2025-10-29T22:17:49.826Z","id":"R907igot7oGC1lvQ","name":"Ahmed Yousef <acc.ahmed.m.yousef@gmail.com>","type":"personal","icon":null,"description":null}}]}]
+[
+{
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        416,
+        16
+      ],
+      "id": "c2617cbb-ed9d-41ec-b3fe-efbb0ceef3a7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {
+          "responseMode": "lastNode"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -208,
+        32
+      ],
+      "id": "c9bba44d-b8c8-4e9d-903b-bf24e2f49d00",
+      "name": "When chat message received",
+      "webhookId": "2019dbb0-693a-41bc-8c57-9154567b4ea3"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        288,
+        224
+      ],
+      "id": "34d9a5ad-c94b-4201-9a55-e8a3c1ce20db",
+      "name": "OpenRouter Chat Model",
+      "notesInFlow": false,
+      "credentials": {
+        "openRouterApi": {
+          "id": "eTNYCGFMRo3QD8Hj",
+          "name": "OpenRouter account"
+        }
+      },
+      "notes": "you are a very help full ai assistant"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        224
+      ],
+      "id": "753a02db-619b-42f0-8699-71a8878bea3d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        768,
+        16
+      ],
+      "id": "f7c65982-573d-43e5-8709-c28ee95e6f8e",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aba4b40b96d66bbc88326a5e6b8fe0ae32af4add16b67ef63d19dbc5abe5453d"
+  }
+}
+,
+{
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.data.message.conversation }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0f378448-6cf1-459a-9c5c-72798f964e38",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "0b6430ca-f2f5-4e42-a4b1-54f2839e3e21",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "eTNYCGFMRo3QD8Hj",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.data.message.conversation }}",
+        "contextWindowLength": 99
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "2aed557e-88ee-47df-a6bc-7b14188a5919",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Webhook').item.json.body.instance }}",
+        "remoteJid": "={{ $('Webhook').item.json.body.data.key.remoteJidAlt }}",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-en.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        0
+      ],
+      "id": "448e4266-44bd-46cb-a85c-d4321ea181fb",
+      "name": "Send text",
+      "credentials": {
+        "evolutionApi": {
+          "id": "mETfkOT2zuLfmuYG",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aba4b40b96d66bbc88326a5e6b8fe0ae32af4add16b67ef63d19dbc5abe5453d"
+  }
+}
+,
+{
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "51243730-88a2-4fbc-bf76-b8015b339885",
+      "name": "Telegram Trigger",
+      "webhookId": "076d67cd-2361-44a8-9574-6de079a3864c",
+      "credentials": {
+        "telegramApi": {
+          "id": "irGiiA3LMwLgDcRY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant you are chatting with {{ $json.message.chat.first_name }} and today is {{ DateTime.fromISO($now).toLocaleString(DateTime.DATETIME_FULL) }}\n\nin replay You are a Telegram bot. Always respond in MarkdownV2. Escape these characters: _ * [ ] ( ) ~ ` > # + - = | { } . !\n\nin replay You are a Telegram bot respond with telegram supported html"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        272,
+        0
+      ],
+      "id": "28a1bff7-c727-48ac-90dd-e832abdd8917",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        144,
+        208
+      ],
+      "id": "a768700a-7a6a-4be3-9fa5-c7ece282de49",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "eTNYCGFMRo3QD8Hj",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b282de60-bef3-4484-a374-c75a99ad3aff",
+      "name": "Send a text message",
+      "webhookId": "f76d6e93-badb-48a6-a408-74e2deef2dca",
+      "credentials": {
+        "telegramApi": {
+          "id": "irGiiA3LMwLgDcRY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 99
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        208
+      ],
+      "id": "10dcd4ba-f57a-47f2-8c07-21bcd46dc2d5",
+      "name": "Simple Memory"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aba4b40b96d66bbc88326a5e6b8fe0ae32af4add16b67ef63d19dbc5abe5453d"
+  }
+}
+]
